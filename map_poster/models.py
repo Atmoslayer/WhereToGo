@@ -22,3 +22,17 @@ class Coordinates(models.Model):
 
     def __str__(self):
         return self.place.title
+
+
+class Image(models.Model):
+    place = models.ForeignKey(
+        'Place',
+        on_delete=models.CASCADE,
+        verbose_name='Место',
+        related_name='place_images'
+    )
+    image = models.ImageField('Картинка')
+    index = models.IntegerField('Номер картинки')
+
+    def __str__(self):
+        return self.place.title
