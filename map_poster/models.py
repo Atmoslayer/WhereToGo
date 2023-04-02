@@ -15,7 +15,7 @@ class Coordinates(models.Model):
         'Place',
         on_delete=models.CASCADE,
         verbose_name='Место',
-        related_name='place_coordinates'
+        related_name='coordinates'
     )
     lat = models.FloatField(max_length=10, verbose_name='Широта')
     lon = models.FloatField(max_length=10, verbose_name='Долгота')
@@ -29,7 +29,7 @@ class Image(models.Model):
         'Place',
         on_delete=models.CASCADE,
         verbose_name='Место',
-        related_name='place_images'
+        related_name='images'
     )
     image = models.ImageField('Картинка')
     index = models.IntegerField('Номер картинки')
