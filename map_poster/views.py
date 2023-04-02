@@ -1,7 +1,7 @@
-from where_to_go import settings
-
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.urls import reverse
+
 from map_poster.models import Place
 
 
@@ -12,6 +12,7 @@ def show_main(request):
     features = []
     for place in places:
         coordinates = place.coordinates.get()
+        details_url = reverse('place', args=[place.id])
         features.append(
             {
                 "type": "Feature",
@@ -21,8 +22,8 @@ def show_main(request):
                 },
                 "properties": {
                     "title": place.title,
-                    "placeId": "moscow_legends",
-                    "detailsUrl": "/static/places/moscow_legends.json"
+                    "placeId": place.id,
+                    "detailsUrl": details_url
                 }
             }
         )
@@ -39,7 +40,7 @@ def show_main(request):
     return render(request, 'index.html', context)
 
 
-def show_place(request, place_id):
+def get_place_details(request, place_id):
     place = get_object_or_404(Place, id=place_id)
     coordinates = place.coordinates.get()
     images = place.images.all()
