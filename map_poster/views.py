@@ -1,36 +1,33 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from map_poster.models import Place
 
 
 def show_main(request):
-    places_data = {
-        "type": "FeatureCollection",
-        "features": [
+
+    places = Place.objects.all()
+
+    features = []
+    for place in places:
+        place_coordinates = place.place_coordinates.get()
+        features.append(
             {
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [37.62, 55.793676]
+                    "coordinates": [place_coordinates.lon, place_coordinates.lat]
                 },
                 "properties": {
-                    "title": "«Легенды Москвы",
+                    "title": place.title,
                     "placeId": "moscow_legends",
                     "detailsUrl": "/static/places/moscow_legends.json"
                 }
-            },
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [37.64, 55.753676]
-                },
-                "properties": {
-                    "title": "Крыши24.рф",
-                    "placeId": "roofs24",
-                    "detailsUrl": "/static/places/roofs24.json"
-                }
             }
-        ]
+        )
+
+    places_data = {
+        "type": "FeatureCollection",
+        "features": features
     }
 
     context ={
