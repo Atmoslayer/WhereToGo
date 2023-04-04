@@ -11,14 +11,13 @@ def show_main(request):
 
     features = []
     for place in places:
-        coordinates = place.coordinates.get()
         details_url = reverse('place', args=[place.id])
         features.append(
             {
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [coordinates.lon, coordinates.lat]
+                    "coordinates": [place.lon, place.lat]
                 },
                 "properties": {
                     "title": place.title,
@@ -42,7 +41,6 @@ def show_main(request):
 
 def get_place_details(request, place_id):
     place = get_object_or_404(Place, id=place_id)
-    coordinates = place.coordinates.get()
     images = place.images.all()
     images_urls = [image.image.url for image in images]
 
@@ -52,8 +50,8 @@ def get_place_details(request, place_id):
         'description_short': place.description_short,
         'description_long': place.description_long,
         'coordinates': {
-            'lat': coordinates.lat,
-            'lng': coordinates.lon
+            'lat': place.lat,
+            'lng': place.lon
         }
     }
 
