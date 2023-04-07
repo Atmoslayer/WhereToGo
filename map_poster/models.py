@@ -8,6 +8,9 @@ class Place(models.Model):
     lat = models.FloatField(max_length=10, verbose_name='Широта')
     lon = models.FloatField(max_length=10, verbose_name='Долгота')
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.title
 
@@ -20,7 +23,10 @@ class Image(models.Model):
         related_name='images'
     )
     image = models.ImageField('Картинка')
-    index = models.IntegerField('Номер картинки')
+    index = models.PositiveIntegerField(verbose_name='Номер картинки', blank=True, default=0)
+
+    class Meta:
+        ordering = ['index']
 
     def __str__(self):
         return self.place.title
