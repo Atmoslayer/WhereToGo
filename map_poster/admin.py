@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from .models import Place, Image
 
 
-class ImageInline(admin.StackedInline):
+class ImageInline(admin.TabularInline):
     model = Image
     extra = 0
 
