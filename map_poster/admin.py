@@ -1,4 +1,4 @@
-from adminsortable.admin import SortableStackedInline, SortableAdminMixin
+from adminsortable.admin import SortableStackedInline, NonSortableParentAdmin
 from django.contrib import admin
 from django.utils.html import format_html
 
@@ -18,7 +18,7 @@ class ImageInline(SortableStackedInline, admin.TabularInline):
 
 
 @admin.register(Place)
-class PlaceAdmin(SortableAdminMixin, admin.ModelAdmin):
+class PlaceAdmin(NonSortableParentAdmin, admin.ModelAdmin):
     inlines = [ImageInline]
     list_display = ['title', 'description_short', 'lat', 'lon']
     search_fields = ['title']
