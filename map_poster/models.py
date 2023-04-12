@@ -29,3 +29,4 @@ class Image(SortableMixin):
 
     def __str__(self):
         return self.place.title
+    
