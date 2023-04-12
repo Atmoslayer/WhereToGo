@@ -4,7 +4,7 @@ from tinymce.models import HTMLField
 
 
 class Place(models.Model):
-    title = models.CharField('Название', max_length=50)
+    title = models.CharField('Название', max_length=200)
     description_short = models.CharField('Короткое описание', max_length=500)
     description_long = HTMLField('Длинное описание')
     lat = models.FloatField(max_length=10, verbose_name='Широта')
@@ -29,4 +29,3 @@ class Image(SortableMixin):
 
     def __str__(self):
         return self.place.title
-    
