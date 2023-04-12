@@ -9,8 +9,6 @@ class Place(models.Model):
     description_long = HTMLField('Длинное описание')
     lat = models.FloatField(max_length=10, verbose_name='Широта')
     lon = models.FloatField(max_length=10, verbose_name='Долгота')
-    # class Meta:
-    #     ordering = ['id']
 
     def __str__(self):
         return self.title
