@@ -12,9 +12,9 @@ class ImageInline(SortableStackedInline, admin.TabularInline):
     ordering = ['index']
     readonly_fields = ['place_images']
 
-    def place_images(self, object):
+    def place_images(self, image_object):
 
-        return format_html('<img src="{}" height=200px />', mark_safe(object.image.url))
+        return format_html('<img src="{}" height=200px />', mark_safe(image_object.image.url))
 
     place_images.short_description = 'Миниатюра'
 
