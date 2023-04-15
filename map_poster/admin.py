@@ -1,6 +1,7 @@
 from adminsortable.admin import SortableStackedInline, NonSortableParentAdmin
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from .models import Place, Image
 
@@ -12,7 +13,8 @@ class ImageInline(SortableStackedInline, admin.TabularInline):
     readonly_fields = ['place_images']
 
     def place_images(self, object):
-        return format_html(f'<img src="{object.image.url}" height=200px />')
+
+        return format_html('<img src="{}" height=200px />', mark_safe(object.image.url))
 
     place_images.short_description = 'Миниатюра'
 
