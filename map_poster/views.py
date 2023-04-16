@@ -12,22 +12,22 @@ def show_main(request):
         details_url = reverse('place', args=[place.id])
         features.append(
             {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [place.lon, place.lat]
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [place.lon, place.lat]
                 },
-                "properties": {
-                    "title": place.title,
-                    "placeId": place.id,
-                    "detailsUrl": details_url
+                'properties': {
+                    'title': place.title,
+                    'placeId': place.id,
+                    'detailsUrl': details_url
                 }
             }
         )
 
     places_data = {
-        "type": "FeatureCollection",
-        "features": features
+        'type': 'FeatureCollection',
+        'features': features
     }
 
     context = {
