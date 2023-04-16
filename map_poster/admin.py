@@ -28,6 +28,6 @@ class PlaceAdmin(NonSortableParentAdmin, admin.ModelAdmin):
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     list_display = ['index', 'place']
-    ordering = ['index']
+    ordering = ['place']
 
 
