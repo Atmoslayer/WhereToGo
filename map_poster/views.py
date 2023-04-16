@@ -6,9 +6,7 @@ from map_poster.models import Place
 
 
 def show_main(request):
-
     places = Place.objects.all()
-
     features = []
     for place in places:
         details_url = reverse('place', args=[place.id])
