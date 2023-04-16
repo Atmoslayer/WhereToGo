@@ -30,3 +30,4 @@ class ImageAdmin(admin.ModelAdmin):
     list_display = ['index', 'place']
     ordering = ['index']
 
+
