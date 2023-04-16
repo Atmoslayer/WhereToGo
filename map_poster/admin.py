@@ -14,7 +14,7 @@ class ImageInline(SortableStackedInline, admin.TabularInline):
 
     def place_images(self, image_object):
 
-        return format_html('<img src="{}" height=200px />', mark_safe(image_object.image.url))
+        return format_html('<img src="{}" height=200px />', image_object.image.url)
 
     place_images.short_description = 'Миниатюра'
 
