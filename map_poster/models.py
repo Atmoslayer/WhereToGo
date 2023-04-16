@@ -28,4 +28,4 @@ class Image(SortableMixin):
         ordering = ['index']
 
     def __str__(self):
-        return self.place.title
+        return f'{self.place.title} {self.index}'
