@@ -1,7 +1,4 @@
-import base64
-import json
 import logging
-import time
 from urllib.parse import urlparse
 
 from django.core.files.base import ContentFile
@@ -10,43 +7,28 @@ import requests
 from requests import HTTPError
 from map_poster.models import Place, Image
 from progress.bar import IncrementalBar
-from environs import Env
 
 logging.basicConfig(level=logging.INFO)
 
 
-def load_places_to_db(places_url):
-    env = Env()
-    env.read_env()
-    github_token = env.str("GITHUB_TOKEN")
-    headers = {
-        'Authorization': f'token {github_token}',
-    }
+def load_place_to_db(place_url):
     try:
-        response = requests.get(places_url, headers=headers)
-        response.raise_for_status()
-        places = response.json()
-        places_urls = [place_tree['url'] for place_tree in places['tree']]
-        for place_url in places_urls:
-            place_content = parse_place_url(place_url, headers)
-            load_place(place_content, headers)
-            time.sleep(5)
+        place_content = parse_place_url(place_url)
+        load_place(place_content)
 
     except HTTPError as http_error:
         logging.info(f'\nHTTP error occurred: {http_error}')
 
 
-def parse_place_url(place_url, headers):
-    response = requests.get(place_url, headers)
+def parse_place_url(place_url):
+    response = requests.get(place_url)
     response.raise_for_status()
-    place = response.json()
-    place_content = base64.b64decode(place['content']).decode('utf-8')
-    place_content_decoded = json.loads(place_content)
+    place_content = response.json()
 
-    return place_content_decoded
+    return place_content
 
 
-def load_place(place_content, headers):
+def load_place(place_content):
     new_place = Place(
         title=place_content['title'],
         description_short=place_content['description_short'],
@@ -59,7 +41,7 @@ def load_place(place_content, headers):
 
     for image_index, image_url in enumerate(place_content['imgs'], start=1):
         image_name = urlparse(image_url).path.split('/')[-1]
-        response = requests.get(image_url, headers)
+        response = requests.get(image_url)
         response.raise_for_status()
         image = Image()
         image.image.save(image_name, ContentFile(response.content), save=False)
@@ -70,15 +52,17 @@ def load_place(place_content, headers):
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Loads places to DB'
 
     def handle(self, *args, **options):
-        load_places_to_db(options['places_url'])
+        places_urls = options['places_urls']
+        for place_url in places_urls:
+            load_place_to_db(place_url)
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-url',
-            '--places_url',
-            help='Enter place json url',
-            default='https://api.github.com/repos/devmanorg/where-to-go-places/git/trees/0bbc9f0fcdbbd20b6324d0a3759e570fc6940f95'
+            '-urls',
+            '--places_urls',
+            help='Enter place json urls',
+            nargs='+',
         )
