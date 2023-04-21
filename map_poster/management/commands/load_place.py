@@ -57,7 +57,7 @@ def load_place(place_content):
             )
             bar.next()
     else:
-        logging.info("Place already exists")
+        logging.info('Place already exists')
 
 
 class Command(BaseCommand):
