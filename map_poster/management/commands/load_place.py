@@ -1,6 +1,7 @@
 import logging
 from urllib.parse import urlparse
 
+from django.db.utils import IntegrityError
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 import requests
@@ -19,6 +20,9 @@ def load_place_to_db(place_url):
     except HTTPError as http_error:
         logging.info(f'\nHTTP error occurred: {http_error}')
 
+    except IntegrityError as load_error:
+        logging.info(f'\nError occurred while place loading: {load_error}')
+
 
 def parse_place_url(place_url):
     response = requests.get(place_url)
@@ -30,11 +34,11 @@ def parse_place_url(place_url):
 
 def load_place(place_content):
     new_place, place_created = Place.objects.get_or_create(
-        title=place_content['title'],
-        description_short=place_content['description_short'],
-        description_long=place_content['description_long'],
-        lat=place_content['coordinates']['lat'],
-        lon=place_content['coordinates']['lng']
+        title=place_content.get('title'),
+        description_short=place_content.get('description_short'),
+        description_long=place_content.get('description_long'),
+        lat=place_content.get('coordinates').get('lat'),
+        lon=place_content.get('coordinates').get('lng')
     )
     bar = IncrementalBar(f'Downloading images for {place_content["title"]}', max=len(place_content['imgs']))
     if place_created:
