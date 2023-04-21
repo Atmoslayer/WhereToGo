@@ -19,7 +19,8 @@ class Image(SortableMixin):
         'Place',
         on_delete=models.CASCADE,
         verbose_name='Место',
-        related_name='images'
+        related_name='images',
+        blank=True
     )
     image = models.ImageField('Картинка')
     index = models.PositiveIntegerField(verbose_name='Номер картинки', blank=True, default=0)
