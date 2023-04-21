@@ -1,6 +1,7 @@
 import logging
 from urllib.parse import urlparse
 
+from django.core.exceptions import MultipleObjectsReturned
 from django.db.utils import IntegrityError
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
@@ -21,6 +22,9 @@ def load_place_to_db(place_url):
         logging.info(f'\nHTTP error occurred: {http_error}')
 
     except IntegrityError as load_error:
+        logging.info(f'\nError occurred while place loading: {load_error}')
+
+    except MultipleObjectsReturned as load_error:
         logging.info(f'\nError occurred while place loading: {load_error}')
 
 
@@ -52,6 +56,8 @@ def load_place(place_content):
                 image=ContentFile(response.content, name=image_name)
             )
             bar.next()
+    else:
+        logging.info("Place already exists")
 
 
 class Command(BaseCommand):
