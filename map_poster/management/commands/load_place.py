@@ -42,18 +42,18 @@ def parse_place_url(place_url):
 
 
 def load_place(place_content):
+    place_title = place_content.get('title', place_content['title'])
+    place_images = place_content.get('imgs', place_content['imgs'])
     new_place, place_created = Place.objects.get_or_create(
-        title=place_content.get('title', place_content['title']),
+        title=place_title,
         description_short=place_content.get('description_short', ''),
         description_long=place_content.get('description_long', ''),
         lat=place_content.get('coordinates', place_content['coordinates']).get('lat', place_content['coordinates']['lat']),
         lon=place_content.get('coordinates', place_content['coordinates']).get('lng', place_content['coordinates']['lng'])
     )
-    bar = IncrementalBar(
-        f'Downloading images for {place_content.get("title", place_content["title"])}', max=len(place_content.get('imgs', place_content['imgs']))
-    )
+    bar = IncrementalBar(f'Downloading images for {place_title}', max=len(place_images))
     if place_created:
-        for image_index, image_url in enumerate(place_content.get('imgs', place_content['imgs']), start=1):
+        for image_index, image_url in enumerate(place_images, start=1):
             image_name = urlparse(image_url).path.split('/')[-1]
             response = requests.get(image_url)
             response.raise_for_status()
