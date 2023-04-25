@@ -44,7 +44,7 @@ def parse_place_url(place_url):
 def load_place(place_content):
     place_title = place_content.get('title', place_content['title'])
     place_images = place_content.get('imgs', place_content['imgs'])
-    new_place, place_created = Place.objects.get_or_create(
+    place, place_created = Place.objects.get_or_create(
         title=place_title,
         description_short=place_content.get('description_short', ''),
         description_long=place_content.get('description_long', ''),
@@ -58,7 +58,7 @@ def load_place(place_content):
             response = requests.get(image_url)
             response.raise_for_status()
             Image.objects.get_or_create(
-                place=new_place,
+                place=place,
                 index=image_index,
                 image=ContentFile(response.content, name=image_name)
             )
