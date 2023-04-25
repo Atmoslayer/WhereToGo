@@ -1,3 +1,4 @@
+import json
 import logging
 from urllib.parse import urlparse
 
@@ -26,6 +27,8 @@ def load_place_to_db(place_url):
 
     except MultipleObjectsReturned as load_error:
         logging.info(f'\nError occurred while place loading: {load_error}')
+    except json.decoder.JSONDecodeError:
+        logging.info(f'\nError occurred while parsing. Check the url')
 
 
 def parse_place_url(place_url):
@@ -39,14 +42,14 @@ def parse_place_url(place_url):
 def load_place(place_content):
     new_place, place_created = Place.objects.get_or_create(
         title=place_content.get('title'),
-        description_short=place_content.get('description_short'),
-        description_long=place_content.get('description_long'),
+        description_short=place_content.get('description_short', ''),
+        description_long=place_content.get('description_long', ''),
         lat=place_content.get('coordinates').get('lat'),
         lon=place_content.get('coordinates').get('lng')
     )
     bar = IncrementalBar(f'Downloading images for {place_content["title"]}', max=len(place_content['imgs']))
     if place_created:
-        for image_index, image_url in enumerate(place_content['imgs'], start=1):
+        for image_index, image_url in enumerate(place_content.get(['img'], []), start=1):
             image_name = urlparse(image_url).path.split('/')[-1]
             response = requests.get(image_url)
             response.raise_for_status()
