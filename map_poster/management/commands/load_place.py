@@ -29,6 +29,8 @@ def load_place_to_db(place_url):
         logging.info(f'\nError occurred while place loading: {load_error}')
     except json.decoder.JSONDecodeError:
         logging.info(f'\nError occurred while parsing. Check the url')
+    except KeyError as load_error:
+        logging.info(f'\nError occurred while place creating.\nKey {load_error} not found. Check the dictionary')
 
 
 def parse_place_url(place_url):
@@ -41,15 +43,17 @@ def parse_place_url(place_url):
 
 def load_place(place_content):
     new_place, place_created = Place.objects.get_or_create(
-        title=place_content.get('title'),
+        title=place_content.get('title', place_content['title']),
         description_short=place_content.get('description_short', ''),
         description_long=place_content.get('description_long', ''),
-        lat=place_content.get('coordinates').get('lat'),
-        lon=place_content.get('coordinates').get('lng')
+        lat=place_content.get('coordinates', place_content['coordinates']).get('lat', place_content['coordinates']['lat']),
+        lon=place_content.get('coordinates', place_content['coordinates']).get('lng', place_content['coordinates']['lng'])
     )
-    bar = IncrementalBar(f'Downloading images for {place_content["title"]}', max=len(place_content['imgs']))
+    bar = IncrementalBar(
+        f'Downloading images for {place_content.get("title", place_content["title"])}', max=len(place_content.get('imgs', place_content['imgs']))
+    )
     if place_created:
-        for image_index, image_url in enumerate(place_content.get(['img'], []), start=1):
+        for image_index, image_url in enumerate(place_content.get('imgs', place_content['imgs']), start=1):
             image_name = urlparse(image_url).path.split('/')[-1]
             response = requests.get(image_url)
             response.raise_for_status()
@@ -59,8 +63,6 @@ def load_place(place_content):
                 image=ContentFile(response.content, name=image_name)
             )
             bar.next()
-    else:
-        logging.info('Place already exists')
 
 
 class Command(BaseCommand):
