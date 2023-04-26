@@ -25,8 +25,6 @@ def load_place_to_db(place_url):
     except IntegrityError as load_error:
         logging.info(f'\nError occurred while place loading: {load_error}')
 
-    except MultipleObjectsReturned as load_error:
-        logging.info(f'\nError occurred while place loading: {load_error}')
     except json.decoder.JSONDecodeError:
         logging.info(f'\nError occurred while parsing. Check the url')
     except KeyError as load_error:
@@ -44,25 +42,32 @@ def parse_place_url(place_url):
 def load_place(place_content):
     place_title = place_content.get('title', place_content['title'])
     place_images = place_content.get('imgs', place_content['imgs'])
-    place, place_created = Place.objects.get_or_create(
+    place, place_created = Place.objects.update_or_create(
         title=place_title,
-        description_short=place_content.get('description_short', ''),
-        description_long=place_content.get('description_long', ''),
-        lat=place_content.get('coordinates', place_content['coordinates']).get('lat', place_content['coordinates']['lat']),
-        lon=place_content.get('coordinates', place_content['coordinates']).get('lng', place_content['coordinates']['lng'])
+        defaults={
+            'description_short': place_content.get('description_short', ''),
+            'description_long': place_content.get('description_long', ''),
+            'lat': place_content.get('coordinates', place_content['coordinates']).get('lat', place_content['coordinates']['lat']),
+            'lon': place_content.get('coordinates', place_content['coordinates']).get('lng', place_content['coordinates']['lng'])
+        },
     )
-    bar = IncrementalBar(f'Downloading images for {place_title}', max=len(place_images))
     if place_created:
-        for image_index, image_url in enumerate(place_images, start=1):
-            image_name = urlparse(image_url).path.split('/')[-1]
-            response = requests.get(image_url)
-            response.raise_for_status()
-            Image.objects.get_or_create(
-                place=place,
-                index=image_index,
-                image=ContentFile(response.content, name=image_name)
-            )
-            bar.next()
+        bar = IncrementalBar(f'Downloading images for {place_title}', max=len(place_images))
+    else:
+        bar = IncrementalBar(f'Uploading images for {place_title}', max=len(place_images))
+
+    for image_index, image_url in enumerate(place_images, start=1):
+        image_name = urlparse(image_url).path.split('/')[-1]
+        response = requests.get(image_url)
+        response.raise_for_status()
+        Image.objects.update_or_create(
+            place=place,
+            index=image_index,
+            defaults={
+                'image': ContentFile(response.content, name=image_name)
+            },
+        )
+        bar.next()
 
 
 class Command(BaseCommand):
