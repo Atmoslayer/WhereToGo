@@ -25,13 +25,9 @@ def show_main(request):
             }
         )
 
-    places_data = {
+    context = {
         'type': 'FeatureCollection',
         'features': features
-    }
-
-    context = {
-        'places_data': places_data
     }
 
     return render(request, 'index.html', context)
