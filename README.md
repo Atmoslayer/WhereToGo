@@ -51,5 +51,24 @@ json файлы должны иметь следующий вид:
 Для тестовой версии проекта данные были взяты из [репозитория](https://github.com/devmanorg/where-to-go-places).
 В случае с гитхабом для получения ссылки на json файл откройте его с помощью кнопки `Raw`. После этого будет 
 получен путь к файлу, который можно скопировать из адресной строки.
+### Ссылки на json файлы
+Для тестовой версии проекта данные были взяты из [репозитория](https://github.com/devmanorg/where-to-go-places).
+В случае с гитхабом для получения ссылки на json файл откройте его с помощью кнопки `Raw`. После этого будет 
+получен путь к файлу, который можно скопировать из адресной строки. Для удобства, ниже представлен список
+некоторых ссылок из [репозитория](https://github.com/devmanorg/where-to-go-places) в пригодном для запроса виде. 
+Для их использования просто передайте список в аргумент  `-urls`.
+```
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Антикафе%20Bizone.json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Арт-пространство%20«Бункер%20703».json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Водопад%20Радужный.json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Воробьёвы%20горы.json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Генератор%20Маркса%20или%20«Катушка%20Тесла».json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Горбовская%20ГЭС.json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Дизайн-квартал%20Флакон.json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Дом%2C%20где%20снимался%20фильм%20«Покровские%20ворота».json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Заброшенный%20пионерский%20лагерь%20«Белое%20озеро».json
+https://raw.githubusercontent.com/devmanorg/where-to-go-places/master/places/Заброшенный%20пионерский%20лагерь%20«Сказка».json
+```
+
 ## Цели проекта
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org).
