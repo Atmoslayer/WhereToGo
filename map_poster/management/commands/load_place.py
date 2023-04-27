@@ -40,15 +40,15 @@ def parse_place_url(place_url):
 
 
 def load_place(place_content):
-    place_title = place_content.get('title', place_content['title'])
-    place_images = place_content.get('imgs', place_content['imgs'])
+    place_title = place_content['title']
+    place_images = place_content['imgs']
     place, place_created = Place.objects.update_or_create(
         title=place_title,
         defaults={
             'description_short': place_content.get('description_short', ''),
             'description_long': place_content.get('description_long', ''),
-            'lat': place_content.get('coordinates', place_content['coordinates']).get('lat', place_content['coordinates']['lat']),
-            'lon': place_content.get('coordinates', place_content['coordinates']).get('lng', place_content['coordinates']['lng'])
+            'lat': place_content['coordinates']['lat'],
+            'lon': place_content['coordinates']['lng']
         },
     )
     if place_created:
