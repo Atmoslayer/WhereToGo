@@ -16,7 +16,9 @@ logging.basicConfig(level=logging.INFO)
 
 def load_place_to_db(place_url):
     try:
-        place_content = parse_place_url(place_url)
+        response = requests.get(place_url)
+        response.raise_for_status()
+        place_content = response.json()
         load_place(place_content)
 
     except HTTPError as http_error:
@@ -29,14 +31,6 @@ def load_place_to_db(place_url):
         logging.info(f'\nError occurred while parsing. Check the url')
     except KeyError as load_error:
         logging.info(f'\nError occurred while place creating.\nKey {load_error} not found. Check the dictionary')
-
-
-def parse_place_url(place_url):
-    response = requests.get(place_url)
-    response.raise_for_status()
-    place_content = response.json()
-
-    return place_content
 
 
 def load_place(place_content):
